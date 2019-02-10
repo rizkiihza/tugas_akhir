@@ -72,6 +72,12 @@ public class Gr_Tree {
         System.out.println(Arrays.toString(headTable.toArray()));
     }
 
+    public void printDatabase() {
+        for (ArrayList<Predicate> arrPredicate: database) {
+            System.out.println(Arrays.toString(arrPredicate.toArray()));
+        }
+    }
+
     public void printTrie() {
         for (Map.Entry<Integer, GrNode> entry: this.root.children.entrySet()) {
             printRecurs(entry.getValue(), new ArrayList<Predicate>());

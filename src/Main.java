@@ -28,6 +28,8 @@ public class Main {
 
         grTree.printHeadTable();
         System.out.println();
+        grTree.printDatabase();
+        System.out.println();
         grTree.printTrie();
     }
 }
