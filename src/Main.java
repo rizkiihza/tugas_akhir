@@ -1,3 +1,5 @@
+import data_structure.Gr_Tree;
+import data_structure.Support;
 import helper.Converter;
 import helper.MathHelper;
 import helper.Sorter;
@@ -6,6 +8,7 @@ import helper.SupportCounter;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 
 public class Main {
     public static void main(String[] args) {
@@ -21,21 +24,10 @@ public class Main {
         };
 
         Converter.convertInputToData(inputs, database, dataClasses);
+        Gr_Tree grTree = new Gr_Tree(database, dataClasses);
 
-        for (int i = 0; i < database.size(); i++) {
-            System.out.printf("%s, %d\n", Arrays.toString(database.get(i).toArray()), dataClasses.get(i));
-        }
-
-        ArrayList<Predicate> arrPredicate = SupportCounter.getSupportAllPredicate(database, dataClasses);
+        grTree.printHeadTable();
         System.out.println();
-        for (Predicate p: arrPredicate) {
-            System.out.println(p);
-        }
-
-        System.out.println();
-        arrPredicate = Sorter.sortArrayBySupport(arrPredicate);
-        for (Predicate p: arrPredicate) {
-            System.out.println(p);
-        }
+        grTree.printTrie();
     }
 }

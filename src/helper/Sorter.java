@@ -16,4 +16,12 @@ public class Sorter {
         });
         return copyPredicateArray;
     }
+
+    public static ArrayList<ArrayList<Predicate>> generateSortedDatabase(ArrayList<ArrayList<Predicate>> database) {
+        ArrayList<ArrayList<Predicate>> sortedDatabase = new ArrayList<>();
+        for (ArrayList<Predicate> arr: database) {
+            sortedDatabase.add(Sorter.sortArrayBySupport(arr));
+        }
+        return sortedDatabase;
+    }
 }
