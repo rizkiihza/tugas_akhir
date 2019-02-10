@@ -5,7 +5,7 @@ public class Main {
     public static void main(String[] args) {
         int plus_size = 4;
         int negative_size = 1;
-        int p = 0;
+        int p = 3;
         int n = 1;
 
         double ds = MathHelper.discriminativeSignificance(p, n, plus_size, negative_size);
