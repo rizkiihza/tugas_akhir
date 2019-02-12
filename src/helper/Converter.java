@@ -8,18 +8,22 @@ import java.util.HashMap;
 
 public class Converter {
     public static void convertInputToData(String[] input, ArrayList<ArrayList<Predicate>> database,
-                                          ArrayList<Integer> dataClasses) {
+                                          ArrayList<Support> dataClasses) {
         for (String s: input) {
-            String[] splited_s = s.split("\\s+");
-            if (splited_s.length == 1) {
-                dataClasses.add(Integer.valueOf(splited_s[0]));
+            String[] splitedString = s.split("\\s+");
+            if (splitedString.length == 1) {
+                Integer stringIntegerValue = Integer.valueOf(splitedString[0]);
+                Support support = new Support(stringIntegerValue);
+                dataClasses.add(support);
             } else {
                 ArrayList<Predicate> arrPredicate = new ArrayList<>();
-                for (int i = 0; i < splited_s.length - 1; i++) {
-                    arrPredicate.add(new Predicate(Integer.valueOf(splited_s[i])));
+                for (int i = 0; i < splitedString.length - 1; i++) {
+                    arrPredicate.add(new Predicate(Integer.valueOf(splitedString[i])));
                 }
                 database.add(arrPredicate);
-                dataClasses.add(Integer.valueOf(splited_s[splited_s.length - 1]));
+                Integer stringIntegerValue = Integer.valueOf(splitedString[splitedString.length - 1]);
+                Support support = new Support(stringIntegerValue);
+                dataClasses.add(support);
             }
         }
     }
@@ -28,7 +32,7 @@ public class Converter {
         HashMap<Integer, Support> counter = new HashMap<>();
 
         for (Predicate p: arrPredicate) {
-            counter.put(p.id, new Support(p.plus_support, p.negative_support));
+            counter.put(p.id, new Support(p.plusSupport, p.negativeSupport));
         }
         return counter;
     }
@@ -38,8 +42,8 @@ public class Converter {
         for (ArrayList<Predicate> arrPredicate: database) {
             for (Predicate p: arrPredicate) {
                 Support support = counter.get(p.id);
-                p.plus_support = support.plus_support;
-                p.negative_support = support.negative_support;
+                p.plusSupport = support.plusSupport;
+                p.negativeSupport = support.negativeSupport;
             }
         }
     }

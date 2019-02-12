@@ -11,7 +11,7 @@ public class Sorter {
         copyPredicateArray.sort(new Comparator<Predicate>() {
             @Override
             public int compare(Predicate o1, Predicate o2) {
-                return ((o2.plus_support + o2.negative_support) - (o1.plus_support + o1.negative_support) );
+                return ((o2.plusSupport + o2.negativeSupport) - (o1.plusSupport + o1.negativeSupport) );
             }
         });
         return copyPredicateArray;

@@ -1,11 +1,28 @@
 package data_structure;
 
-public class Support {
-    public int plus_support;
-    public int negative_support;
+import constants.PredicateConstants;
 
-    public Support(int plus_support, int negative_support) {
-        this.plus_support = plus_support;
-        this.negative_support = negative_support;
+public class Support {
+    public int plusSupport;
+    public int negativeSupport;
+
+    public Support(int plusSupport, int negativeSupport) {
+        this.plusSupport = plusSupport;
+        this.negativeSupport = negativeSupport;
+    }
+
+    public Support(int dataClass) {
+        if (dataClass == PredicateConstants.PLUS) {
+            this.plusSupport = 1;
+            this.negativeSupport = 0;
+        } else {
+            this.plusSupport = 0;
+            this.negativeSupport = 1;
+        }
+    }
+
+    @Override
+    public String toString() {
+        return String.format("[%d, %d]", plusSupport, negativeSupport);
     }
 }

@@ -10,11 +10,11 @@ import java.util.Map;
 
 public class SupportCounter {
     public static ArrayList<Predicate> getSupportAllPredicate(ArrayList<ArrayList<Predicate>> database,
-                                                              ArrayList<Integer> dataClasses) {
+                                                              ArrayList<Support> dataClasses) {
         HashMap<Integer, Support> counter = new HashMap<>();
 
         for (int i = 0; i < database.size(); i++) {
-            int dataClass = dataClasses.get(i);
+            Support dataClass = dataClasses.get(i);
             for (Predicate p: database.get(i)) {
                addToSupport(p, dataClass, counter);
             }
@@ -23,22 +23,19 @@ public class SupportCounter {
         ArrayList<Predicate> arrPredicate = new ArrayList<>();
         for (Map.Entry<Integer, Support> entry : counter.entrySet()) {
             Support support = entry.getValue();
-            arrPredicate.add(new Predicate(entry.getKey(), support.plus_support, support.negative_support));
+            arrPredicate.add(new Predicate(entry.getKey(), support.plusSupport, support.negativeSupport));
         }
 
         return arrPredicate;
     }
 
-    private static void addToSupport(Predicate p, int dataClass, HashMap<Integer, Support> counter) {
+    private static void addToSupport(Predicate p, Support dataClass, HashMap<Integer, Support> counter) {
         if (!counter.containsKey(p.id)) {
             counter.put(p.id, new Support(0, 0));
         }
         Support support = counter.get(p.id);
-        if (dataClass == PredicateConstants.PLUS) {
-            support.plus_support += 1;
-        } else if (dataClass == PredicateConstants.NEGATIVE) {
-            support.negative_support += 1;
-        }
+        support.plusSupport += dataClass.plusSupport;
+        support.negativeSupport += dataClass.plusSupport;
         counter.put(p.id, support);
     }
 }

@@ -1,19 +1,15 @@
-import data_structure.Gr_Tree;
+import data_structure.ConditionalDatabase;
+import data_structure.GrTree;
 import data_structure.Support;
 import helper.Converter;
-import helper.MathHelper;
-import helper.Sorter;
 import data_structure.Predicate;
-import helper.SupportCounter;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
 
 public class Main {
     public static void main(String[] args) {
         ArrayList<ArrayList<Predicate>> database = new ArrayList<>();
-        ArrayList<Integer> dataClasses = new ArrayList<>();
+        ArrayList<Support> dataClasses = new ArrayList<>();
 
         String[] inputs = {
                 "2 1",
@@ -24,11 +20,19 @@ public class Main {
         };
 
         Converter.convertInputToData(inputs, database, dataClasses);
-        Gr_Tree grTree = new Gr_Tree(database, dataClasses);
+        GrTree grTree = new GrTree(database, dataClasses);
 
         grTree.printHeadTable();
         System.out.println();
-        grTree.printDatabase();
+        grTree.printTrie();
+
+        ConditionalDatabase conditionalDatabase = new ConditionalDatabase(grTree, 16);
+        System.out.println();
+        conditionalDatabase.printDatabase();
+        System.out.println();
+
+        grTree = new GrTree(conditionalDatabase);
+        grTree.printHeadTable();
         System.out.println();
         grTree.printTrie();
     }

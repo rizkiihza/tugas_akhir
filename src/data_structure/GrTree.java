@@ -6,18 +6,14 @@ import helper.Converter;
 import helper.Sorter;
 import helper.SupportCounter;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
-public class Gr_Tree {
+public class GrTree {
     public ArrayList<Predicate> headTable;
-    public ArrayList<ArrayList<Predicate>> database;
-    public ArrayList<Integer> dataClasses;
+    public HashSet<Integer> prefix;
     public GrNode root;
 
-    private class GrNode {
+    public class GrNode {
         public HashMap<Integer, GrNode> children;
         public Predicate predicate;
 
@@ -28,40 +24,53 @@ public class Gr_Tree {
 
         public GrNode(Predicate p) {
             children = new HashMap<>();
-            predicate = new Predicate(p.id, p.plus_support, p.negative_support);
+            predicate = new Predicate(p.id, p.plusSupport, p.negativeSupport);
         }
     }
 
-    public Gr_Tree(ArrayList<ArrayList<Predicate>> database, ArrayList<Integer> dataClasses) {
+    public GrTree(ArrayList<ArrayList<Predicate>> database, ArrayList<Support> dataClasses) {
+        HashSet<Integer> prefix = new HashSet<>();
+        createGrTree(database, dataClasses, prefix);
+    }
+
+    public GrTree(ArrayList<ArrayList<Predicate>> database, ArrayList<Support> dataClasses, HashSet<Integer> prefix) {
+        createGrTree(database, dataClasses, prefix);
+    }
+
+    public GrTree(ConditionalDatabase conditionalDatabase) {
+        createGrTree(conditionalDatabase.database, conditionalDatabase.dataClasses, conditionalDatabase.prefix);
+    }
+
+    private void createGrTree(ArrayList<ArrayList<Predicate>> database, ArrayList<Support> dataClasses, HashSet<Integer> prefix) {
         // construct headTable and dataClasses
         ArrayList<Predicate> arrPredicate = SupportCounter.getSupportAllPredicate(database, dataClasses);
-        this.dataClasses = dataClasses;
         this.headTable = Sorter.sortArrayBySupport(arrPredicate);
 
         // construct sorted database
         HashMap<Integer, Support> counter = Converter.convertPredicateArrayToHashMap(arrPredicate);
         Converter.fillDatabaseWithSupport(database, counter);
-        this.database = Sorter.generateSortedDatabase(database);
+        ArrayList<ArrayList<Predicate>> sortedDatabase= Sorter.generateSortedDatabase(database);
 
         // construct Trie
         root = new GrNode(new Predicate(-1, -1, -1));
-        for (int i = 0; i < this.database.size(); i++) {
-            insertToTrie(this.database.get(i), this.dataClasses.get(i));
+        for (int i = 0; i < sortedDatabase.size(); i++) {
+            insertToTrie(sortedDatabase.get(i), dataClasses.get(i));
         }
+
+        // construct prefix
+        this.prefix = new HashSet<>();
+        this.prefix.addAll(prefix);
     }
 
-    public void insertToTrie(ArrayList<Predicate> arr, Integer dataClass) {
+    public void insertToTrie(ArrayList<Predicate> arr, Support dataClass) {
         GrNode currentNode = root;
         for (Predicate p: arr) {
             if (!currentNode.children.containsKey(p.id)) {
                 currentNode.children.put(p.id, new GrNode(p.id));
             }
             currentNode = currentNode.children.get(p.id);
-            if (dataClass == PredicateConstants.PLUS) {
-                currentNode.predicate.plus_support += 1;
-            } else {
-                currentNode.predicate.negative_support += 1;
-            }
+            currentNode.predicate.plusSupport += dataClass.plusSupport;
+            currentNode.predicate.negativeSupport += dataClass.negativeSupport;
         }
     }
 
@@ -72,11 +81,6 @@ public class Gr_Tree {
         System.out.println(Arrays.toString(headTable.toArray()));
     }
 
-    public void printDatabase() {
-        for (ArrayList<Predicate> arrPredicate: database) {
-            System.out.println(Arrays.toString(arrPredicate.toArray()));
-        }
-    }
 
     public void printTrie() {
         for (Map.Entry<Integer, GrNode> entry: this.root.children.entrySet()) {

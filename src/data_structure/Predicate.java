@@ -2,27 +2,27 @@ package data_structure;
 
 public class Predicate {
     public int id;
-    public int plus_support;
-    public int negative_support;
+    public int plusSupport;
+    public int negativeSupport;
 
     public Predicate(int id) {
         this.id = id;
-        this.plus_support = -1;
-        this.negative_support = -1;
+        this.plusSupport = -1;
+        this.negativeSupport = -1;
     }
 
     public boolean isHasSupport() {
-        return this.plus_support != -1 && this.negative_support != -1;
+        return this.plusSupport != -1 && this.negativeSupport != -1;
     }
 
-    public Predicate(int id, int plus_support, int negative_support) {
+    public Predicate(int id, int plusSupport, int negativeSupport) {
         this.id = id;
-        this.plus_support = plus_support;
-        this.negative_support = negative_support;
+        this.plusSupport = plusSupport;
+        this.negativeSupport = negativeSupport;
     }
 
     @Override
     public String toString() {
-        return String.format("(%d,[%d, %d])", this.id, this.plus_support, this.negative_support);
+        return String.format("(%d,[%d, %d])", this.id, this.plusSupport, this.negativeSupport);
     }
 }
