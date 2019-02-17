@@ -1,10 +1,11 @@
 package data_structure;
 
+import helper.Converter;
+import helper.Sorter;
+import helper.SupportCounter;
+
 import java.sql.SQLOutput;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Map;
+import java.util.*;
 
 public class ConditionalDatabase {
     public HashSet<Integer> prefix;
@@ -13,10 +14,16 @@ public class ConditionalDatabase {
 
 
     public ConditionalDatabase(ArrayList<ArrayList<Predicate>> database, ArrayList<Support> dataClasses) {
+        ArrayList<Predicate> arrPredicate = SupportCounter.getSupportAllPredicate(database, dataClasses);
+
+        // fill database with support
+        HashMap<Integer, Support> counter = Converter.convertPredicateArrayToHashMap(arrPredicate);
+        Converter.fillDatabaseWithSupport(database, counter);
+
         // copy database
         this.database = new ArrayList<>();
-        for (ArrayList<Predicate> arrPredicate: database) {
-            this.database.add(new ArrayList<>(arrPredicate));
+        for (ArrayList<Predicate> arr: database) {
+            this.database.add(new ArrayList<>(arr));
         }
 
         // copy dataClasses
@@ -36,7 +43,6 @@ public class ConditionalDatabase {
         dataClasses = new ArrayList<>();
 
         createDatabase(grTree, prefixAddition);
-
     }
 
     private void createDatabase(GrTree grTree, Integer prefixAddition) {

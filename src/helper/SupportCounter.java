@@ -12,7 +12,6 @@ public class SupportCounter {
     public static ArrayList<Predicate> getSupportAllPredicate(ArrayList<ArrayList<Predicate>> database,
                                                               ArrayList<Support> dataClasses) {
         HashMap<Integer, Support> counter = new HashMap<>();
-
         for (int i = 0; i < database.size(); i++) {
             Support dataClass = dataClasses.get(i);
             for (Predicate p: database.get(i)) {
@@ -35,7 +34,7 @@ public class SupportCounter {
         }
         Support support = counter.get(p.id);
         support.plusSupport += dataClass.plusSupport;
-        support.negativeSupport += dataClass.plusSupport;
+        support.negativeSupport += dataClass.negativeSupport;
         counter.put(p.id, support);
     }
 }

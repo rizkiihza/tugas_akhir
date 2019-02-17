@@ -25,4 +25,26 @@ public class Support {
     public String toString() {
         return String.format("[%d, %d]", plusSupport, negativeSupport);
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this) {
+            return true;
+        }
+
+        if (!(obj instanceof Support)) {
+            return false;
+        }
+
+        Support support = (Support) obj;
+        return support.plusSupport == this.plusSupport && support.negativeSupport == this.negativeSupport;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = 17;
+        result = 31 * result + plusSupport;
+        result = 31 * result + negativeSupport;
+        return result;
+    }
 }
