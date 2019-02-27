@@ -29,4 +29,10 @@ public class GeneratorSet {
 
         return minimumSupport;
     }
+
+    public void print() {
+        for (Support support: GS.keySet()) {
+            System.out.printf("%s : %s\n", support.toString(), GS.get(support).toString());
+        }
+    }
 }

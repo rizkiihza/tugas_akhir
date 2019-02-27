@@ -27,4 +27,9 @@ public class Generator {
         }
         System.out.print("}");
     }
+
+    @Override
+    public String toString() {
+        return generator.toString();
+    }
 }

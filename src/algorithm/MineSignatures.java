@@ -12,7 +12,8 @@ public class MineSignatures {
         GeneratorSet generatorSet= new GeneratorSet();
         MineRec.mineRec(fullDatabase, grTree, k, negSup, sizeLimit, generatorSet);
 
-        return ClusterGenerators.ClusterGeneratorToPredicatedBugSignature(conditionalDatabase,
-                generatorSet);
+        return null;
+//        return ClusterGenerators.ClusterGeneratorToPredicatedBugSignature(conditionalDatabase,
+//                generatorSet);
     }
 }

@@ -23,7 +23,17 @@ public class MineRec {
             updateResult(GS, k, patternSupport, fullDatabaseSupport, newPrefix);
         }
 
+        System.out.println("GS");
+        GS.print();
+        System.out.println();
         if (grTree.prefix.size() + 1 == sizeLimit) {
+            return;
+        }
+
+        System.out.println("GrTree head table");
+        System.out.println(grTree.headTable);
+        System.out.println();
+        if (grTree.headTable.size() <= 1) {
             return;
         }
 
@@ -31,10 +41,20 @@ public class MineRec {
             ArrayList<Integer> newPrefix = new ArrayList<>(grTree.prefix);
             newPrefix.add(p.id);
 
+            System.out.println(newPrefix.toString());
+
             ConditionalDatabase newDatabase = new ConditionalDatabase(grTree, p.id);
+            System.out.println("Conditional Database");
             newDatabase.removeItemByNegativeSupport(negSup);
 
-            GrTree newGrTree = new GrTree(newDatabase); 
+            GrTree newGrTree = new GrTree(newDatabase);
+
+            newDatabase.printDatabase();
+            System.out.println("GrTree");
+            newGrTree.printHeadTable();
+            System.out.println("Trie");
+            newGrTree.printTrie();
+            System.out.println();
         }
     }
 

@@ -46,24 +46,35 @@ public class GrTree {
         HashSet<Integer> predicateIdsToRemove = new HashSet<>();
 
         while (root.children.size() == 1) {
-            predicateIdsToRemove.add(root.predicate.id);
-            root = root.children.get(root.children.keySet().iterator().next());
+
+
+            Integer childId = root.children.keySet().iterator().next();
+            predicateIdsToRemove.add(childId);
+            GrNode child = root.children.get(childId);
+
+            root.children.remove(childId);
+
+            if (child.children.size() >= 1) {
+                for (Integer grandChildrenId: child.children.keySet()) {
+                    GrNode grandChildren = child.children.get(grandChildrenId);
+                    root.children.put(grandChildrenId, grandChildren);
+                }
+            }
         }
 
         removePredicatesFromHeadTable(predicateIdsToRemove);
     }
 
     private void removePredicatesFromHeadTable(HashSet<Integer> predicateIds) {
-        int index = 0;
-        while (index < predicateIds.size()) {
-            int current_id = headTable.get(index).id;
-            if (predicateIds.contains(current_id)) {
-                headTable.remove(index);
-                predicateIds.remove(current_id);
-            } else {
-                index += 1;
+        ArrayList<Predicate> newHeadTable = new ArrayList<>();
+
+        for (Predicate p: headTable) {
+            if (!predicateIds.contains(p.id)) {
+                newHeadTable.add(p);
             }
         }
+
+        headTable = newHeadTable;
     }
 
     private void createGrTree(ArrayList<ArrayList<Predicate>> database, ArrayList<Support> dataClasses, HashSet<Integer> prefix) {
