@@ -41,6 +41,31 @@ public class GrTree {
         createGrTree(conditionalDatabase.database, conditionalDatabase.dataClasses, conditionalDatabase.prefix);
     }
 
+
+    private void removeAllPredicateWithFullSupport() {
+        HashSet<Integer> predicateIdsToRemove = new HashSet<>();
+
+        while (root.children.size() == 1) {
+            predicateIdsToRemove.add(root.predicate.id);
+            root = root.children.get(root.children.keySet().iterator().next());
+        }
+
+        removePredicatesFromHeadTable(predicateIdsToRemove);
+    }
+
+    private void removePredicatesFromHeadTable(HashSet<Integer> predicateIds) {
+        int index = 0;
+        while (index < predicateIds.size()) {
+            int current_id = headTable.get(index).id;
+            if (predicateIds.contains(current_id)) {
+                headTable.remove(index);
+                predicateIds.remove(current_id);
+            } else {
+                index += 1;
+            }
+        }
+    }
+
     private void createGrTree(ArrayList<ArrayList<Predicate>> database, ArrayList<Support> dataClasses, HashSet<Integer> prefix) {
         // construct headTable and dataClasses
         ArrayList<Predicate> arrPredicate = SupportCounter.getSupportAllPredicate(database, dataClasses);
@@ -60,6 +85,9 @@ public class GrTree {
         // construct prefix
         this.prefix = new HashSet<>();
         this.prefix.addAll(prefix);
+
+        // delete predicate with full support
+        removeAllPredicateWithFullSupport();
     }
 
     public void insertToTrie(ArrayList<Predicate> arr, Support dataClass) {
