@@ -6,6 +6,7 @@ import constants.PredicateConstants;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 
 public class SupportCounter {
@@ -37,4 +38,34 @@ public class SupportCounter {
         support.negativeSupport += dataClass.negativeSupport;
         counter.put(p.id, support);
     }
+
+    public static Support getSupportOfPattern(ArrayList<Integer> pattern, ArrayList<ArrayList<Predicate>> database, ArrayList<Support> dataClasses) {
+        Support support = new Support(0,0);
+
+        for (int i = 0; i < database.size(); i++) {
+            ArrayList<Predicate> transaction = database.get(i);
+            boolean isContained = true;
+
+            HashSet<Integer> transactionSet = new HashSet<>();
+            for (Predicate p: transaction) {
+                transactionSet.add(p.id);
+            }
+
+            for (Integer predicateId: pattern) {
+                if (!transactionSet.contains(predicateId)) {
+                    isContained = false;
+                    break;
+                }
+            }
+
+            if (isContained) {
+                Support transactionSupport = dataClasses.get(i);
+                support.plusSupport += transactionSupport.plusSupport;
+                support.negativeSupport += transactionSupport.negativeSupport;
+            }
+        }
+        return support;
+    }
+
+
 }

@@ -45,11 +45,40 @@ public class ConditionalDatabase {
         createDatabase(grTree, prefixAddition);
     }
 
+    public Support countSupportOfAPattern(ArrayList<Integer> pattern) {
+        return SupportCounter.getSupportOfPattern(pattern, database, dataClasses);
+    }
+
+    public Support countTotalSupport() {
+        Support totalSupport = new Support(0, 0);
+        for (Support support: dataClasses) {
+            totalSupport.plusSupport += support.plusSupport;
+            totalSupport.negativeSupport += support.negativeSupport;
+        }
+
+        return totalSupport;
+    }
+
     private void createDatabase(GrTree grTree, Integer prefixAddition) {
         for (Map.Entry<Integer, GrTree.GrNode> entry: grTree.root.children.entrySet()) {
             GrTree.GrNode child = entry.getValue();
             traverse(child, prefixAddition, new ArrayList<>());
         }
+    }
+
+    public void removeItemByNegativeSupport(int negSup) {
+        ArrayList<ArrayList<Predicate>> newDatabase = new ArrayList<>();
+        ArrayList<Support> newDataClasses = new ArrayList<>();
+
+        for (int i = 0; i < dataClasses.size(); i++) {
+            if (dataClasses.get(i).negativeSupport >= negSup) {
+                newDatabase.add(database.get(i));
+                newDataClasses.add(dataClasses.get(i));
+            }
+        }
+
+        database = newDatabase;
+        dataClasses = newDataClasses;
     }
 
     private void traverse(GrTree.GrNode grNode, Integer prefixAddition, ArrayList<Predicate> path) {

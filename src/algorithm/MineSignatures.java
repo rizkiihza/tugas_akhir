@@ -6,11 +6,11 @@ import java.util.HashMap;
 import java.util.HashSet;
 
 public class MineSignatures {
-    public static PredicatedBugSignature mine(ConditionalDatabase conditionalDatabase, int k, int neg_sup, int size_limit) {
+    public static PredicatedBugSignature mine(ConditionalDatabase conditionalDatabase, ConditionalDatabase fullDatabase, int k, int negSup, int sizeLimit) {
         GrTree grTree = new GrTree(conditionalDatabase);
 
         GeneratorSet generatorSet= new GeneratorSet();
-        MineRec.mineRec(grTree, k, neg_sup, size_limit, generatorSet);
+        MineRec.mineRec(fullDatabase, grTree, k, negSup, sizeLimit, generatorSet);
 
         return ClusterGenerators.ClusterGeneratorToPredicatedBugSignature(conditionalDatabase,
                 generatorSet);

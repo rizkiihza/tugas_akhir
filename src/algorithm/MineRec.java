@@ -1,13 +1,66 @@
 package algorithm;
 
 import data_structure.*;
+import helper.MathHelper;
 
 import java.util.ArrayList;
 
 public class MineRec {
-    public static void mineRec(GrTree grTree, int k, int neg_sup, int size_limit, GeneratorSet GS) {
-        mineRecMock(grTree, GS);
+    public static void mineRec(ConditionalDatabase fullDatabase, GrTree grTree, int k, int negSup, int sizeLimit, GeneratorSet GS) {
+        Support fullDatabaseSupport = fullDatabase.countTotalSupport();
+        if (grTree.headTable.size() == 0) {
+            return;
+        }
+
+        // update result
+        for (Predicate p: grTree.headTable) {
+            ArrayList<Integer> newPrefix = new ArrayList<>(grTree.prefix);
+            newPrefix.add(p.id);
+
+            Support patternSupport = fullDatabase.countSupportOfAPattern(newPrefix);
+
+
+            updateResult(GS, k, patternSupport, fullDatabaseSupport, newPrefix);
+        }
+
+        if (grTree.prefix.size() + 1 == sizeLimit) {
+            return;
+        }
+
+        for (Predicate p: grTree.headTable) {
+            ArrayList<Integer> newPrefix = new ArrayList<>(grTree.prefix);
+            newPrefix.add(p.id);
+
+            ConditionalDatabase newDatabase = new ConditionalDatabase(grTree, p.id);
+            newDatabase.removeItemByNegativeSupport(negSup);
+
+            GrTree newGrTree = new GrTree(newDatabase); 
+        }
     }
+
+    private static void updateResult(GeneratorSet GS, int k, Support patternSupport, Support fullDatabaseSupport, ArrayList<Integer> newPrefix) {
+        Generator generator = new Generator(newPrefix);
+        if (GS.GS.containsKey(patternSupport)) {
+            GS.GS.get(patternSupport).add(generator);
+        }
+        else  {
+            GS.GS.put(patternSupport, new ArrayList<>());
+            GS.GS.get(patternSupport).add(generator);
+        }
+
+        if (GS.GS.keySet().size() > k && k > 0) {
+            removeMinDSFromGeneratorSet(GS, fullDatabaseSupport);
+        }
+    }
+
+    private static void removeMinDSFromGeneratorSet(GeneratorSet GS, Support fullDatabaseSupport) {
+        Support minimumSupport = GS.getMinimumDSSupport(fullDatabaseSupport);
+
+        if (minimumSupport != null) {
+            GS.GS.remove(minimumSupport);
+        }
+    }
+
 
     public static void mineRecMock(GrTree grTree, GeneratorSet GS) {
         Support support = new Support(1, 0);
