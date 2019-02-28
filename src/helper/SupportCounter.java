@@ -1,5 +1,6 @@
 package helper;
 
+import data_structure.ConditionalDatabase;
 import data_structure.Predicate;
 import data_structure.Support;
 import constants.PredicateConstants;
@@ -37,6 +38,16 @@ public class SupportCounter {
         support.plusSupport += dataClass.plusSupport;
         support.negativeSupport += dataClass.negativeSupport;
         counter.put(p.id, support);
+    }
+
+    public static Support getSuppotOfTransaction(ArrayList<Integer> transactions, ConditionalDatabase fullDatabase) {
+        Support totalSupport = new Support(0, 0);
+        for (Integer transaction: transactions) {
+            Support transactionSupport = fullDatabase.dataClasses.get(transaction);
+            totalSupport.plusSupport += transactionSupport.plusSupport;
+            totalSupport.negativeSupport += transactionSupport.negativeSupport;
+        }
+        return totalSupport;
     }
 
     public static Support getSupportOfPattern(ArrayList<Integer> pattern, ArrayList<ArrayList<Predicate>> database, ArrayList<Support> dataClasses) {

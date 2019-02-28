@@ -30,6 +30,17 @@ public class GeneratorSet {
         return minimumSupport;
     }
 
+
+    public void print(Support fullDatabaseSupport) {
+        int plusSupport = fullDatabaseSupport.plusSupport;
+        int negativeSupport = fullDatabaseSupport.negativeSupport;
+
+        for (Support support: GS.keySet()) {
+            System.out.printf("%s : %.4f %s\n", support.toString(), MathHelper.discriminativeSignificance(support.plusSupport, support.negativeSupport,
+                    plusSupport, negativeSupport), GS.get(support).toString());
+        }
+    }
+
     public void print() {
         for (Support support: GS.keySet()) {
             System.out.printf("%s : %s\n", support.toString(), GS.get(support).toString());
