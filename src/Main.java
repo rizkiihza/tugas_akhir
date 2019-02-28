@@ -91,7 +91,7 @@ public class Main {
         conditionalDatabase.printDatabase();
         System.out.println();
 
-        PredicatedBugSignature predicatedBugSignature = MineSignatures.mine(conditionalDatabase, conditionalDatabase,5, 0, 100);
+        PredicatedBugSignature predicatedBugSignature = MineSignatures.mine(conditionalDatabase, conditionalDatabase,100, 0, 100);
         System.out.println();
         predicatedBugSignature.print(conditionalDatabase);
     }
