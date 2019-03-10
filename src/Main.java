@@ -1,9 +1,11 @@
 import algorithm.MineSignatures;
 import data_structure.*;
 import helper.Converter;
+import helper.FileReader;
 import helper.SupportCounter;
 import jdk.nashorn.api.tree.ConditionalExpressionTree;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -12,6 +14,7 @@ public class Main {
     public static void testDB() {
         ArrayList<ArrayList<Predicate>> database = new ArrayList<>();
         ArrayList<Support> dataClasses = new ArrayList<>();
+
 
         String[] inputs = {
                 "2 1",
@@ -76,13 +79,11 @@ public class Main {
         ArrayList<ArrayList<Predicate>> database = new ArrayList<>();
         ArrayList<Support> dataClasses = new ArrayList<>();
 
-        String[] inputs = {
-                "2 1",
-                "4 12 1",
-                "4 7 9 14 11 1",
-                "4 7 9 14 16 1",
-                "4 7 9 11 16 -1"
-        };
+        String filePath = System.getProperty("user.dir") + "/input/" + "input.txt";
+        System.out.println(filePath);
+
+        String[] inputs = FileReader.read(filePath);
+
 
         Converter.convertInputToData(inputs, database, dataClasses);
 
@@ -91,7 +92,7 @@ public class Main {
         conditionalDatabase.printDatabase();
         System.out.println();
 
-        PredicatedBugSignature predicatedBugSignature = MineSignatures.mine(conditionalDatabase, conditionalDatabase,100, 0, 100);
+        PredicatedBugSignature predicatedBugSignature = MineSignatures.mine(conditionalDatabase, conditionalDatabase,5, 0, 100);
         System.out.println();
         predicatedBugSignature.print(conditionalDatabase);
     }
@@ -99,6 +100,5 @@ public class Main {
 
     public static void main(String[] args) {
         testConditionalDB();
-
     }
 }
