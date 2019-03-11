@@ -4,37 +4,53 @@ import helper.MathHelper;
 import helper.SupportCounter;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 
 public class PredicatedBugSignature {
     public HashMap<ArrayList<Integer>, ArrayList<Generator>> bugSignature;
+    public ArrayList<BugSignatureDSPair> bugSignatureDSPairs;
 
     public PredicatedBugSignature() {
         bugSignature = new HashMap<>();
     }
 
-    public void print(ConditionalDatabase fullDatabase) {
+    public void addBugSignatureToDSPairs(ConditionalDatabase fullDatabase) {
+        bugSignatureDSPairs = new ArrayList<>();
         Support fullDatabaseSupport = fullDatabase.countTotalSupport();
 
         for (ArrayList<Integer> transaction: bugSignature.keySet()) {
             Support transactionSupport = SupportCounter.getSuppotOfTransaction(transaction, fullDatabase);
-
             Double ds = MathHelper.discriminativeSignificance(
-                    transactionSupport.plusSupport,
-                    transactionSupport.negativeSupport,
-                    fullDatabaseSupport.plusSupport,
-                    fullDatabaseSupport.negativeSupport
+                transactionSupport.plusSupport,
+                transactionSupport.negativeSupport,
+                fullDatabaseSupport.plusSupport,
+                fullDatabaseSupport.negativeSupport
             );
 
-            System.out.printf("%s: %.4f %s\n", transaction.toString(), ds, bugSignature.get(transaction).toString());
+            bugSignatureDSPairs.add(new BugSignatureDSPair(ds, bugSignature.get(transaction)));
         }
+
+        bugSignatureDSPairs.sort(new Comparator<BugSignatureDSPair>() {
+            @Override
+            public int compare(BugSignatureDSPair pair1, BugSignatureDSPair pair2) {
+                if (pair1.ds.equals(pair2.ds)) {
+                    return 0;
+                }
+                else if (pair1.ds < pair2.ds) {
+                    return 1;
+                }
+                else {
+                    return -1;
+                }
+            }
+        });
     }
 
     public void print() {
-        for (Map.Entry<ArrayList<Integer>, ArrayList<Generator>> entry: bugSignature.entrySet()) {
-
-            System.out.printf("%s : %s \n", entry.getKey().toString(), entry.getValue().toString());
+        for (BugSignatureDSPair pair: bugSignatureDSPairs) {
+            System.out.printf("%s : %.4f\n", pair.generators.toString(), pair.ds);
         }
     }
 }
