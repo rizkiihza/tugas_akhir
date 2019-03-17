@@ -2,6 +2,7 @@ import algorithm.MineSignatures;
 import data_structure.*;
 import helper.Converter;
 import helper.FileReader;
+import helper.MemoryWatcher;
 import helper.SupportCounter;
 import jdk.nashorn.api.tree.ConditionalExpressionTree;
 
@@ -99,6 +100,16 @@ public class Main {
 
 
     public static void main(String[] args) {
+        // init watcher
+        MemoryWatcher memoryWatcher = MemoryWatcher.getInstance();
+        long startTIme = System.currentTimeMillis();
+
         testConditionalDB();
+        memoryWatcher.ping();
+        long endTime = System.currentTimeMillis();
+
+        System.out.println();
+        System.out.printf("Time: %d\n", endTime - startTIme);
+        System.out.printf("Memory: %d\n", memoryWatcher.getMaxMemoryUsed());
     }
 }
