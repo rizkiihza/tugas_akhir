@@ -2,13 +2,11 @@ import algorithm.MineSignatures;
 import data_structure.*;
 import helper.Converter;
 import helper.FileReader;
+import helper.JsonReaderHelper;
 import helper.MemoryWatcher;
-import helper.SupportCounter;
-import jdk.nashorn.api.tree.ConditionalExpressionTree;
 
-import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
 
 public class Main {
@@ -80,7 +78,8 @@ public class Main {
         ArrayList<ArrayList<Predicate>> database = new ArrayList<>();
         ArrayList<Support> dataClasses = new ArrayList<>();
 
-        String filePath = System.getProperty("user.dir") + "/input/" + "input.txt";
+        String filename = "input2.txt";
+        String filePath = System.getProperty("user.dir") + "/input/" + filename;
         System.out.println(filePath);
 
         String[] inputs = FileReader.read(filePath);
@@ -96,6 +95,16 @@ public class Main {
         System.out.println();
         predicatedBugSignature.addBugSignatureToDSPairs(fullDatabase);
         predicatedBugSignature.print();
+
+        String predicateFileName = "predicate.json";
+        String predicateFilePath = System.getProperty("user.dir") + "/input/" + predicateFileName;
+
+        HashMap<Integer, String> predicateDictionary = JsonReaderHelper.readPredicateDictionary(predicateFilePath);
+
+        System.out.println();
+        for (Integer i: predicateDictionary.keySet()) {
+            System.out.printf("%d : %s\n", i, predicateDictionary.get(i));
+        }
     }
 
 

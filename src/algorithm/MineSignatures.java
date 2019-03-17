@@ -1,6 +1,7 @@
 package algorithm;
 
 import data_structure.*;
+import helper.MemoryWatcher;
 import helper.SupportCounter;
 
 import java.util.HashMap;
@@ -12,6 +13,8 @@ public class MineSignatures {
 
         GeneratorSet generatorSet= new GeneratorSet();
         MineRec.mineRec(fullDatabase, grTree, k, negSup, sizeLimit, generatorSet);
+
+        MemoryWatcher.getInstance().ping();
 
         return ClusterGenerators.ClusterGeneratorToPredicatedBugSignature(conditionalDatabase,
                 generatorSet, k);

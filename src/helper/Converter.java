@@ -26,6 +26,8 @@ public class Converter {
                 dataClasses.add(support);
             }
         }
+
+        MemoryWatcher.getInstance().ping();
     }
 
     public static HashMap<Integer, Support> convertPredicateArrayToHashMap(ArrayList<Predicate> arrPredicate) {
@@ -34,6 +36,9 @@ public class Converter {
         for (Predicate p: arrPredicate) {
             counter.put(p.id, new Support(p.plusSupport, p.negativeSupport));
         }
+
+        MemoryWatcher.getInstance().ping();
+
         return counter;
     }
 
@@ -46,6 +51,8 @@ public class Converter {
                 p.negativeSupport = support.negativeSupport;
             }
         }
+
+        MemoryWatcher.getInstance().ping();
     }
 }
 

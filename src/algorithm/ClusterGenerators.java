@@ -2,6 +2,7 @@ package algorithm;
 
 import data_structure.*;
 import helper.MathHelper;
+import helper.MemoryWatcher;
 import helper.SupportCounter;
 
 import java.util.*;
@@ -30,6 +31,7 @@ public class ClusterGenerators {
             }
         }
 
+        MemoryWatcher.getInstance().ping();
 
         return predicatedBugSignature;
     }
@@ -72,6 +74,8 @@ public class ClusterGenerators {
                 }
             }
         });
+
+        MemoryWatcher.getInstance().ping();
 
         return bugSignaturePairs;
     }

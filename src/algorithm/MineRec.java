@@ -2,6 +2,7 @@ package algorithm;
 
 import data_structure.*;
 import helper.MathHelper;
+import helper.MemoryWatcher;
 
 import java.util.ArrayList;
 
@@ -12,27 +13,21 @@ public class MineRec {
             return;
         }
 
-        // update result
+        MemoryWatcher.getInstance().ping();
+
         for (Predicate p: grTree.headTable) {
             ArrayList<Integer> newPrefix = new ArrayList<>(grTree.prefix);
             newPrefix.add(p.id);
 
             Support patternSupport = fullDatabase.countSupportOfAPattern(newPrefix);
 
-//            System.out.printf("%s: %s\n", newPrefix.toString(), patternSupport.toString());
             updateResult(GS, k, patternSupport, fullDatabaseSupport, newPrefix);
         }
 
-//        System.out.println("GS");
-//        GS.print(fullDatabaseSupport);
-//        System.out.println();
         if (grTree.prefix.size() + 1 == sizeLimit) {
             return;
         }
 
-//        System.out.println("GrTree head table");
-//        System.out.println(grTree.headTable);
-//        System.out.println();
         if (grTree.headTable.size() <= 1) {
             return;
         }
@@ -41,26 +36,23 @@ public class MineRec {
             ArrayList<Integer> newPrefix = new ArrayList<>(grTree.prefix);
             newPrefix.add(p.id);
 
-//            System.out.println(newPrefix.toString());
+
 
             ConditionalDatabase newDatabase = new ConditionalDatabase(grTree, p.id);
-//            System.out.println("Conditional Database");
+
             newDatabase.removeItemByNegativeSupport(negSup);
 
             GrTree newGrTree = new GrTree(newDatabase);
 
 
             mineRec(fullDatabase, newGrTree, k, negSup, sizeLimit, GS);
-//            newDatabase.printDatabase();
-//            System.out.println("GrTree");
-//            newGrTree.printHeadTable();
-//            System.out.println("Trie");
-//            newGrTree.printTrie();
-//            System.out.println();
         }
     }
 
     private static void updateResult(GeneratorSet GS, int k, Support patternSupport, Support fullDatabaseSupport, ArrayList<Integer> newPrefix) {
+
+        MemoryWatcher.getInstance().ping();
+
         Generator generator = new Generator(newPrefix);
         if (GS.GS.containsKey(patternSupport)) {
             GS.GS.get(patternSupport).add(generator);

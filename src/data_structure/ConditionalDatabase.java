@@ -1,6 +1,7 @@
 package data_structure;
 
 import helper.Converter;
+import helper.MemoryWatcher;
 import helper.Sorter;
 import helper.SupportCounter;
 
@@ -32,6 +33,8 @@ public class ConditionalDatabase {
 
         // empty prefix
         prefix = new HashSet<>();
+
+        MemoryWatcher.getInstance().ping();
     }
 
     public ConditionalDatabase(GrTree grTree, Integer prefixAddition) {
@@ -43,6 +46,8 @@ public class ConditionalDatabase {
         dataClasses = new ArrayList<>();
 
         createDatabase(grTree, prefixAddition);
+
+        MemoryWatcher.getInstance().ping();
     }
 
     public Support countSupportOfAPattern(ArrayList<Integer> pattern) {
@@ -97,6 +102,8 @@ public class ConditionalDatabase {
             traverse(entry.getValue(), prefixAddition, path);
             path.remove(path.size()-1);
         }
+
+        MemoryWatcher.getInstance().ping();
     }
 
     public void printDatabase() {
