@@ -33,10 +33,6 @@ public class MineRec {
         }
 
         for (Predicate p: grTree.headTable) {
-            ArrayList<Integer> newPrefix = new ArrayList<>(grTree.prefix);
-            newPrefix.add(p.id);
-
-
 
             ConditionalDatabase newDatabase = new ConditionalDatabase(grTree, p.id);
 
@@ -44,8 +40,11 @@ public class MineRec {
 
             GrTree newGrTree = new GrTree(newDatabase);
 
+            MemoryWatcher.getInstance().ping();
 
             mineRec(fullDatabase, newGrTree, k, negSup, sizeLimit, GS);
+
+            MemoryWatcher.getInstance().ping();
         }
     }
 
@@ -65,6 +64,8 @@ public class MineRec {
         if (GS.GS.keySet().size() > k && k > 0) {
             removeMinDSFromGeneratorSet(GS, fullDatabaseSupport);
         }
+
+        MemoryWatcher.getInstance().ping();
     }
 
     private static void removeMinDSFromGeneratorSet(GeneratorSet GS, Support fullDatabaseSupport) {
@@ -75,34 +76,4 @@ public class MineRec {
         }
     }
 
-
-    public static void mineRecMock(GrTree grTree, GeneratorSet GS) {
-        Support support = new Support(1, 0);
-        int[] arr1 = {4, 12};
-
-        int[] arr2 = {2};
-
-        int[] arr3 = {4,7,9,14,11};
-
-        int[] arr4 = {4,7,9,14,16};
-
-        if (!GS.GS.containsKey(support)) {
-            GS.GS.put(new Support(1, 0), new ArrayList<>());
-        }
-
-        GS.GS.get(support).add(new Generator(arr1));
-        GS.GS.get(support).add(new Generator(arr2));
-        GS.GS.get(support).add(new Generator(arr3));
-        GS.GS.get(support).add(new Generator(arr4));
-
-        support = new Support(2, 0);
-
-        int[] arr5 = {4,7,9,14};
-
-        if (!GS.GS.containsKey(support)) {
-            GS.GS.put(support, new ArrayList<>());
-        }
-
-        GS.GS.get(support).add(new Generator(arr5));
-    }
 }
