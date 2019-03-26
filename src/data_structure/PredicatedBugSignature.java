@@ -53,4 +53,16 @@ public class PredicatedBugSignature {
             System.out.printf("%s : %.4f\n", pair.generators.toString(), pair.ds);
         }
     }
+
+    public void clean(Double limit) {
+        ArrayList<BugSignatureDSPair> newBugSignatureDSPairs = new ArrayList<>();
+
+        for (BugSignatureDSPair pair: bugSignatureDSPairs) {
+            if (pair.ds >= limit) {
+                newBugSignatureDSPairs.add(pair);
+            }
+        }
+
+        bugSignatureDSPairs = newBugSignatureDSPairs;
+    }
 }

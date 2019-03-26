@@ -23,6 +23,19 @@ public class FileReader {
         return result.toArray(new String[0]);
     }
 
+    public static String[] readBugPredicates(String filepath) {
+        ArrayList<ArrayList<String>>  records = new ArrayList<>();
+        try (Scanner scanner = new Scanner(new File(filepath))) {
+            while (scanner.hasNextLine()) {
+                records.add(getRecordFromLine(scanner.nextLine()));
+            }
+        } catch (Exception e) {
+            System.out.println("Error while reading file: " + e.toString());
+        }
+
+        return records.get(0).toArray(new String[0]);
+    }
+
     private static ArrayList<String> convertToStringList(ArrayList<ArrayList<String>> records) {
         ArrayList<String> compressedData = new ArrayList<>();
         for (ArrayList<String> line: records) {

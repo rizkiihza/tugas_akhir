@@ -11,14 +11,10 @@ import java.util.HashSet;
 
 public class Main {
 
-    public static void analyze() {
+    public static PredicatedBugSignature analyze(String filePath, Integer k, Integer negSup, Double DSLimit) {
         ArrayList<ArrayList<Predicate>> database = new ArrayList<>();
         ArrayList<Support> dataClasses = new ArrayList<>();
 
-        String appName = "contoh";
-
-        String filename = String.format("input_%s.txt", appName);
-        String filePath = System.getProperty("user.dir") + "/input/" + filename;
         System.out.println(filePath);
 
         String[] inputs = FileReader.read(filePath);
@@ -30,15 +26,18 @@ public class Main {
         fullDatabase.printDatabase();
         System.out.println();
 
-        PredicatedBugSignature predicatedBugSignature = MineSignatures.mine(fullDatabase, fullDatabase,5, 0, 100);
+        PredicatedBugSignature predicatedBugSignature = MineSignatures.mine(fullDatabase, fullDatabase, k, negSup, 100);
         System.out.println();
         predicatedBugSignature.addBugSignatureToDSPairs(fullDatabase);
+        predicatedBugSignature.clean(DSLimit);
         predicatedBugSignature.print();
 
-        String predicateFileName = String.format("predicate_%s.json", appName);
-        String predicateFilePath = System.getProperty("user.dir") + "/input/" + predicateFileName;
+        return predicatedBugSignature;
+    }
 
-        HashMap<Integer, String> predicateDictionary = JsonReaderHelper.readPredicateDictionary(predicateFilePath);
+    public static void predicateList(String filePath) {
+
+        HashMap<Integer, String> predicateDictionary = JsonReaderHelper.readPredicateDictionary(filePath);
 
         System.out.println();
         for (Integer i: predicateDictionary.keySet()) {
@@ -46,13 +45,56 @@ public class Main {
         }
     }
 
+    public static Double accuracyCounter(String filepath, PredicatedBugSignature predicatedBugSignature) {
+        String[] bugPredicateInput= FileReader.readBugPredicates(filepath);
+
+        HashSet<Integer> bugPredicates = Converter.convertBugPredicateInputToHashSet(bugPredicateInput);
+
+
+        Integer truePredict = 0;
+        Integer wrongPredict = 0;
+
+        for (BugSignatureDSPair pair: predicatedBugSignature.bugSignatureDSPairs) {
+            for (Generator generator: pair.generators) {
+                boolean isBug = false;
+                for (Integer predicate: generator.generator) {
+                    if (bugPredicates.contains(predicate)) {
+                        truePredict += 1;
+                    } else {
+                        wrongPredict += 1;
+                    }
+                }
+            }
+        }
+
+        return Double.valueOf(truePredict) / (Double.valueOf(truePredict) + Double.valueOf(wrongPredict)) ;
+    }
 
     public static void main(String[] args) {
         // init watcher
         MemoryWatcher memoryWatcher = MemoryWatcher.getInstance();
         long startTIme = System.currentTimeMillis();
 
-        analyze();
+        if (args.length < 3) {
+            System.out.println("needed 3 arguments for type, file1, and file2");
+            System.exit(0);
+        }
+        String type = args[0];
+        String file1 = args[1];
+        String file2 = args[2];
+
+        PredicatedBugSignature predicatedBugSignature;
+
+        if ("s".equals(type)) {
+            predicatedBugSignature = analyze(file1, 100, 0, 0.23);
+            Double result = accuracyCounter(file2, predicatedBugSignature);
+            System.out.println();
+            System.out.printf("Accuracy: %f\n", result);
+        } else {
+            analyze(file1, 5, 0, 0.01);
+            predicateList(file2);
+        }
+
         memoryWatcher.ping();
         long endTime = System.currentTimeMillis();
 

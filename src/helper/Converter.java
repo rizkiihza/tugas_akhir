@@ -5,6 +5,7 @@ import data_structure.Support;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 
 public class Converter {
     public static void convertInputToData(String[] input, ArrayList<ArrayList<Predicate>> database,
@@ -53,6 +54,20 @@ public class Converter {
         }
 
         MemoryWatcher.getInstance().ping();
+    }
+
+    public static HashSet<Integer> convertBugPredicateInputToHashSet(String[] input) {
+        HashSet<Integer> bugPredicates = new HashSet<>();
+
+        if (input.length < 1) {
+            return bugPredicates;
+        }
+
+        for (String row: input) {
+            bugPredicates.add(Integer.valueOf(row));
+        }
+
+        return bugPredicates;
     }
 }
 
