@@ -30,6 +30,21 @@ public class GeneratorSet {
         return minimumSupport;
     }
 
+    public Double getMinimumDS(Support fullDatabaseSupport) {
+        Double minDS = -1.0;
+
+        int fullPositiveSupport = fullDatabaseSupport.plusSupport;
+        int fullNegativeSupport = fullDatabaseSupport.negativeSupport;
+
+        for (Support support: GS.keySet()) {
+            Double currentDS = MathHelper.discriminativeSignificance(support.plusSupport, support.negativeSupport, fullPositiveSupport, fullNegativeSupport);
+            if (minDS == -1.0 || currentDS < minDS) {
+                minDS = currentDS;
+            }
+        }
+
+        return minDS;
+    }
 
     public void print(Support fullDatabaseSupport) {
         int plusSupport = fullDatabaseSupport.plusSupport;

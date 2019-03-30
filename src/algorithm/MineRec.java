@@ -50,6 +50,9 @@ public class MineRec {
                 fullDatabaseSupport.negativeSupport
             );
 
+            if (GS.GS.keySet().size() == k && upperBound < GS.getMinimumDS(fullDatabaseSupport)) {
+                continue;
+            }
 
             MemoryWatcher.getInstance().ping();
 

@@ -89,12 +89,12 @@ public class Main {
         PredicatedBugSignature predicatedBugSignature;
 
         if ("-s".equals(type)) {
-            predicatedBugSignature = analyze(file1, 20, 0, 0.0, 2);
+            predicatedBugSignature = analyze(file1, 1, 0, 0.0, 2);
             Double result = accuracyCounter(file2, predicatedBugSignature);
             System.out.println();
             System.out.printf("Accuracy: %f\n", result);
         } else if ("-r".equals(type)) {
-            analyze(file1, 20, 0, 0.01, 2);
+            analyze(file1, 4, 0, 0.01, 2);
             predicateList(file2);
         }
 
