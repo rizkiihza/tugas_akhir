@@ -5,6 +5,7 @@ import helper.FileReader;
 import helper.JsonReaderHelper;
 import helper.MemoryWatcher;
 
+import java.sql.SQLOutput;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -23,7 +24,7 @@ public class Main {
 
         ConditionalDatabase fullDatabase = new ConditionalDatabase(database, dataClasses);
         System.out.println();
-        fullDatabase.printDatabase();
+        //fullDatabase.printDatabase();
         System.out.println();
 
         PredicatedBugSignature predicatedBugSignature = MineSignatures.mine(fullDatabase, fullDatabase, k, negSup, sizeLimit);
@@ -88,13 +89,18 @@ public class Main {
 
         PredicatedBugSignature predicatedBugSignature;
 
+        Double DSLimit = 0.01;
+        Integer sizeLimit = 4;
+        Integer k = 20;
+
+        System.out.printf("config: -k: %d, -dslimit: %f, -sizeLimit: %d\n", k, DSLimit, sizeLimit);
         if ("-s".equals(type)) {
-            predicatedBugSignature = analyze(file1, 1, 0, 0.0, 2);
+            predicatedBugSignature = analyze(file1, k, 0, DSLimit, sizeLimit);
             Double result = accuracyCounter(file2, predicatedBugSignature);
             System.out.println();
             System.out.printf("Accuracy: %f\n", result);
         } else if ("-r".equals(type)) {
-            analyze(file1, 4, 0, 0.01, 2);
+            analyze(file1, k, 0, DSLimit, sizeLimit);
             predicateList(file2);
         }
 
