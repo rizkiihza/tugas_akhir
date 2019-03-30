@@ -11,7 +11,7 @@ import java.util.HashSet;
 
 public class Main {
 
-    public static PredicatedBugSignature analyze(String filePath, Integer k, Integer negSup, Double DSLimit) {
+    public static PredicatedBugSignature analyze(String filePath, Integer k, Integer negSup, Double DSLimit, Integer sizeLimit) {
         ArrayList<ArrayList<Predicate>> database = new ArrayList<>();
         ArrayList<Support> dataClasses = new ArrayList<>();
 
@@ -26,7 +26,7 @@ public class Main {
         fullDatabase.printDatabase();
         System.out.println();
 
-        PredicatedBugSignature predicatedBugSignature = MineSignatures.mine(fullDatabase, fullDatabase, k, negSup, 100);
+        PredicatedBugSignature predicatedBugSignature = MineSignatures.mine(fullDatabase, fullDatabase, k, negSup, sizeLimit);
         System.out.println();
         predicatedBugSignature.addBugSignatureToDSPairs(fullDatabase);
         predicatedBugSignature.clean(DSLimit);
@@ -56,7 +56,6 @@ public class Main {
 
         for (BugSignatureDSPair pair: predicatedBugSignature.bugSignatureDSPairs) {
             for (Generator generator: pair.generators) {
-                boolean isBug = false;
                 for (Integer predicate: generator.generator) {
                     if (bugPredicates.contains(predicate)) {
                         truePredict += 1;
@@ -67,6 +66,10 @@ public class Main {
             }
         }
 
+
+        if (truePredict == 0 && wrongPredict == 0) {
+            return 0.0;
+        }
         return Double.valueOf(truePredict) / (Double.valueOf(truePredict) + Double.valueOf(wrongPredict)) ;
     }
 
@@ -85,13 +88,13 @@ public class Main {
 
         PredicatedBugSignature predicatedBugSignature;
 
-        if ("s".equals(type)) {
-            predicatedBugSignature = analyze(file1, 100, 0, 0.23);
+        if ("-s".equals(type)) {
+            predicatedBugSignature = analyze(file1, 20, 0, 0.0, 2);
             Double result = accuracyCounter(file2, predicatedBugSignature);
             System.out.println();
             System.out.printf("Accuracy: %f\n", result);
-        } else {
-            analyze(file1, 5, 0, 0.01);
+        } else if ("-r".equals(type)) {
+            analyze(file1, 20, 0, 0.01, 2);
             predicateList(file2);
         }
 

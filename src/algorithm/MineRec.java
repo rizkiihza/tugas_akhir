@@ -40,6 +40,17 @@ public class MineRec {
 
             GrTree newGrTree = new GrTree(newDatabase);
 
+            Support prefixSupport = fullDatabase.countSupportOfAPattern(new ArrayList<>(newGrTree.prefix));
+            Support unavoidableSupport = newGrTree.countUnavoidableSupport();
+
+            Double upperBound = MathHelper.discriminativeSignificance(
+                unavoidableSupport.plusSupport,
+                prefixSupport.negativeSupport,
+                fullDatabaseSupport.plusSupport,
+                fullDatabaseSupport.negativeSupport
+            );
+
+
             MemoryWatcher.getInstance().ping();
 
             mineRec(fullDatabase, newGrTree, k, negSup, sizeLimit, GS);

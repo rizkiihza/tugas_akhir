@@ -121,6 +121,74 @@ public class GrTree {
     }
 
 
+    public Support countUnavoidableSupport() {
+      if (root.children.size() == 0) {
+          return new Support(0, 0);
+      }
+
+      Support result = new Support(-1, -1);
+      for (GrNode child: root.children.values()) {
+         countUnavoidableSupportRecurs(child, 1, result);
+      }
+
+      if (result.plusSupport != -1  && result.negativeSupport != -1) {
+          return result;
+      }
+
+      return countUnavoidableSupportFromLeaf();
+    }
+
+    private void countUnavoidableSupportRecurs(GrNode node, Integer pathSize, Support result) {
+        if (pathSize == this.headTable.size()) {
+            result.plusSupport = node.predicate.plusSupport;
+            result.negativeSupport = node.predicate.negativeSupport;
+            return;
+        }
+
+        for (GrNode child: node.children.values()) {
+            countUnavoidableSupportRecurs(child, pathSize+1,result);
+        }
+    }
+
+    private ArrayList<GrNode> getAllLeafNodes() {
+        ArrayList<GrNode> result = new ArrayList<>();
+        getAllLeafNodesRecurs(root, result);
+        return result;
+    }
+
+    private void getAllLeafNodesRecurs(GrNode node, ArrayList<GrNode> result) {
+        if (node.children.size() == 0) {
+            result.add(node);
+            return;
+        }
+
+        for (GrNode child: node.children.values()) {
+            getAllLeafNodesRecurs(child, result);
+        }
+    }
+
+    private Support countUnavoidableSupportFromLeaf() {
+        ArrayList<GrNode> leafNodes = getAllLeafNodes();
+
+        Integer minPlusSupport = Integer.MAX_VALUE;
+        Integer minNegativeSupport = Integer.MAX_VALUE;
+
+        for (GrNode node: leafNodes) {
+            Integer nodePlusSupport = node.predicate.plusSupport;
+            Integer nodeNegativeSupport = node.predicate.negativeSupport;
+
+            if (nodePlusSupport < minPlusSupport) {
+                minPlusSupport = nodePlusSupport;
+            }
+
+            if (nodeNegativeSupport < minNegativeSupport) {
+                minNegativeSupport = nodeNegativeSupport;
+            }
+        }
+
+        return new Support(minPlusSupport, minNegativeSupport);
+    }
+
     public void printTrie() {
         for (Map.Entry<Integer, GrNode> entry: this.root.children.entrySet()) {
             printRecurs(entry.getValue(), new ArrayList<Predicate>());
@@ -141,4 +209,6 @@ public class GrTree {
         }
         path.remove(path.size()-1);
     }
+
+
 }
