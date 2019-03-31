@@ -8,7 +8,8 @@ import constants.CommonConstant;
 
 public class FileReader {
     public static String[] read(String filepath) {
-        ArrayList<String> result = new ArrayList<>();
+        ArrayList<String> result;
+
         ArrayList<ArrayList<String>>  records = new ArrayList<>();
         try (Scanner scanner = new Scanner(new File(filepath))) {
             while (scanner.hasNextLine()) {
@@ -22,6 +23,34 @@ public class FileReader {
 
         return result.toArray(new String[0]);
     }
+
+    public static Integer getNumberOfPredicate(String filepath) {
+        Integer result = 0;
+        try (Scanner scanner = new Scanner(new File(filepath))) {
+            if (scanner.hasNextLine()) {
+                result = getNumberOfPredicateFromLine(scanner.nextLine());
+            }
+        } catch (Exception e) {
+            System.out.println("Error while reading file: " + e.toString());
+        }
+
+        return result;
+    }
+
+    public static Integer getNumberOfPredicateFromLine(String line) {
+        Integer result = 0;
+        try (Scanner rowScanner = new Scanner(line)) {
+            rowScanner.useDelimiter(CommonConstant.COMMA_DELIMITER);
+            while (rowScanner.hasNext()) {
+                result += 1;
+                rowScanner.next();
+            }
+        } catch (Exception e) {
+            System.out.println("Error while reading line: " + e.toString());
+        }
+        return Math.max(0, result - 1);
+    }
+
 
     public static String[] readBugPredicates(String filepath) {
         ArrayList<ArrayList<String>>  records = new ArrayList<>();

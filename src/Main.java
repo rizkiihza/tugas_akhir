@@ -31,7 +31,7 @@ public class Main {
         System.out.println();
         predicatedBugSignature.addBugSignatureToDSPairs(fullDatabase);
         predicatedBugSignature.clean(DSLimit);
-        predicatedBugSignature.print();
+        //predicatedBugSignature.print();
 
         return predicatedBugSignature;
     }
@@ -90,10 +90,14 @@ public class Main {
         PredicatedBugSignature predicatedBugSignature;
 
         Double DSLimit = 0.01;
-        Integer sizeLimit = 4;
-        Integer k = 20;
+        Integer sizeLimit = 2;
+        Integer k = 25;
+
 
         System.out.printf("config: -k: %d, -dslimit: %f, -sizeLimit: %d\n", k, DSLimit, sizeLimit);
+        Integer numberOfPredicate = FileReader.getNumberOfPredicate(file1);
+        System.out.printf("Number of predicate: %d\n", numberOfPredicate);
+        System.out.println();
         if ("-s".equals(type)) {
             predicatedBugSignature = analyze(file1, k, 0, DSLimit, sizeLimit);
             Double result = accuracyCounter(file2, predicatedBugSignature);
@@ -108,6 +112,8 @@ public class Main {
         long endTime = System.currentTimeMillis();
 
         System.out.println();
+
+
         System.out.printf("Time: %d\n", endTime - startTIme);
         System.out.printf("Memory: %d\n", memoryWatcher.getMaxMemoryUsed());
     }
