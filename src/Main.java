@@ -12,11 +12,9 @@ import java.util.HashSet;
 
 public class Main {
 
-    public static PredicatedBugSignature analyze(String filePath, Integer k, Integer negSup, Double DSLimit, Integer sizeLimit) {
+    public static PredicatedBugSignature analyze(String filePath, Integer k, Integer negSup, Double DSLimit, Integer sizeLimit, boolean isDebug) {
         ArrayList<ArrayList<Predicate>> database = new ArrayList<>();
         ArrayList<Support> dataClasses = new ArrayList<>();
-
-        System.out.println(filePath);
 
         String[] inputs = FileReader.read(filePath);
 
@@ -31,8 +29,10 @@ public class Main {
         System.out.println();
         predicatedBugSignature.addBugSignatureToDSPairs(fullDatabase);
         predicatedBugSignature.clean(DSLimit);
-        //predicatedBugSignature.print();
 
+        if (isDebug) {
+            predicatedBugSignature.print();
+        }
         return predicatedBugSignature;
     }
 
@@ -79,32 +79,41 @@ public class Main {
         MemoryWatcher memoryWatcher = MemoryWatcher.getInstance();
         long startTIme = System.currentTimeMillis();
 
-        if (args.length < 3) {
-            System.out.println("needed 3 arguments for type, file1, and file2");
+        if (args.length < 5) {
+            System.out.println("needed 4 arguments for type, file1, file2, predicateLimit and sizeLimit");
             System.exit(0);
         }
         String type = args[0];
         String file1 = args[1];
         String file2 = args[2];
+        Integer predicateLimit = Integer.valueOf(args[3]);
 
         PredicatedBugSignature predicatedBugSignature;
 
         Double DSLimit = 0.01;
-        Integer sizeLimit = 2;
+        Integer sizeLimit = Integer.valueOf(args[4]);
         Integer k = 25;
 
-
-        System.out.printf("config: -k: %d, -dslimit: %f, -sizeLimit: %d\n", k, DSLimit, sizeLimit);
         Integer numberOfPredicate = FileReader.getNumberOfPredicate(file1);
-        System.out.printf("Number of predicate: %d\n", numberOfPredicate);
+
+        if (numberOfPredicate > predicateLimit) {
+            System.out.println("number of predicate is above predicateLimit");
+            System.exit(0);
+        }
+
+        System.out.printf("config| k = %d, dslimit = %f, sizeLimit = %d\n", k, DSLimit, sizeLimit);
+
+
+        System.out.printf("filename| %s\n", file1);
+        System.out.printf("Number of predicate| %d\n", numberOfPredicate);
         System.out.println();
         if ("-s".equals(type)) {
-            predicatedBugSignature = analyze(file1, k, 0, DSLimit, sizeLimit);
+            predicatedBugSignature = analyze(file1, k, 0, DSLimit, sizeLimit, false);
             Double result = accuracyCounter(file2, predicatedBugSignature);
             System.out.println();
-            System.out.printf("Accuracy: %f\n", result);
+            System.out.printf("Accuracy| %f\n", result);
         } else if ("-r".equals(type)) {
-            analyze(file1, k, 0, DSLimit, sizeLimit);
+            analyze(file1, k, 0, DSLimit, sizeLimit, true);
             predicateList(file2);
         }
 
@@ -114,7 +123,7 @@ public class Main {
         System.out.println();
 
 
-        System.out.printf("Time: %d\n", endTime - startTIme);
-        System.out.printf("Memory: %d\n", memoryWatcher.getMaxMemoryUsed());
+        System.out.printf("Time| %d\n", endTime - startTIme);
+        System.out.printf("Memory| %d\n", memoryWatcher.getMaxMemoryUsed());
     }
 }
